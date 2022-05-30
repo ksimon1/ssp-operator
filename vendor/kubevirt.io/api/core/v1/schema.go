@@ -453,6 +453,9 @@ type Devices struct {
 	// Whether to emulate a sound device.
 	// +optional
 	Sound *SoundDevice `json:"sound,omitempty"`
+	// Whether to emulate a TPM device.
+	// +optional
+	TPM *TPMDevice `json:"tpm,omitempty"`
 }
 
 // Represent a subset of client devices that can be accessed by VMI. At the
@@ -480,6 +483,8 @@ type SoundDevice struct {
 	// +optional
 	Model string `json:"model,omitempty"`
 }
+
+type TPMDevice struct{}
 
 type Input struct {
 	// Bus indicates the bus of input device to emulate.
@@ -598,10 +603,18 @@ type DiskDevice struct {
 	CDRom *CDRomTarget `json:"cdrom,omitempty"`
 }
 
+type DiskBus string
+
+const (
+	DiskBusSCSI   DiskBus = "scsi"
+	DiskBusSATA   DiskBus = "sata"
+	DiskBusVirtio DiskBus = "virtio"
+)
+
 type DiskTarget struct {
 	// Bus indicates the type of disk device to emulate.
 	// supported values: virtio, sata, scsi.
-	Bus string `json:"bus,omitempty"`
+	Bus DiskBus `json:"bus,omitempty"`
 	// ReadOnly.
 	// Defaults to false.
 	ReadOnly bool `json:"readonly,omitempty"`
@@ -621,7 +634,7 @@ type SEV struct {
 type LunTarget struct {
 	// Bus indicates the type of disk device to emulate.
 	// supported values: virtio, sata, scsi.
-	Bus string `json:"bus,omitempty"`
+	Bus DiskBus `json:"bus,omitempty"`
 	// ReadOnly.
 	// Defaults to false.
 	ReadOnly bool `json:"readonly,omitempty"`
@@ -640,7 +653,7 @@ const (
 type CDRomTarget struct {
 	// Bus indicates the type of disk device to emulate.
 	// supported values: virtio, sata, scsi.
-	Bus string `json:"bus,omitempty"`
+	Bus DiskBus `json:"bus,omitempty"`
 	// ReadOnly.
 	// Defaults to true.
 	ReadOnly *bool `json:"readonly,omitempty"`

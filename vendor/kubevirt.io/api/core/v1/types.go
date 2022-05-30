@@ -1632,6 +1632,11 @@ type KubeVirtSpec struct {
 	// Defaults to openshift-monitor
 	MonitorNamespace string `json:"monitorNamespace,omitempty"`
 
+	// The namespace the service monitor will be deployed
+	//  When ServiceMonitorNamespace is set, then we'll install the service monitor object in that namespace
+	// otherwise we will use the monitoring namespace.
+	ServiceMonitorNamespace string `json:"serviceMonitorNamespace,omitempty"`
+
 	// The name of the Prometheus service account that needs read-access to KubeVirt endpoints
 	// Defaults to prometheus-k8s
 	MonitorAccount string `json:"monitorAccount,omitempty"`
@@ -1805,6 +1810,7 @@ const (
 const (
 	EvictionStrategyNone        EvictionStrategy = "None"
 	EvictionStrategyLiveMigrate EvictionStrategy = "LiveMigrate"
+	EvictionStrategyExternal    EvictionStrategy = "External"
 )
 
 // RestartOptions may be provided when deleting an API object.
@@ -2224,8 +2230,4 @@ type FlavorMatcher struct {
 	//
 	// +optional
 	Kind string `json:"kind,omitempty"`
-
-	// Profile is the name of a custom profile in the flavor. If left empty, the default profile is used.
-	// +optional
-	Profile string `json:"profile,omitempty"`
 }
