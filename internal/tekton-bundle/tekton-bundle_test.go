@@ -32,12 +32,12 @@ var _ = Describe("Tekton bundle", func() {
 
 	It("should return correct task path on okd", func() {
 		path := getTasksBundlePath(true)
-		Expect(path).To(Equal("/data/tekton-tasks/okd/kubevirt-tekton-tasks-okd-" + common.TektonTasksVersion + ".yaml"))
+		Expect(path).To(Equal("/data/tekton-tasks/okd/kubevirt-tekton-tasks-okd.yaml"))
 	})
 
 	It("should return correct task path on kubernetes", func() {
 		path := getTasksBundlePath(false)
-		Expect(path).To(Equal("/data/tekton-tasks/kubernetes/kubevirt-tekton-tasks-kubernetes-" + common.TektonTasksVersion + ".yaml"))
+		Expect(path).To(Equal("/data/tekton-tasks/kubernetes/kubevirt-tekton-tasks-kubernetes.yaml"))
 	})
 
 	It("should load correct files and convert them", func() {
