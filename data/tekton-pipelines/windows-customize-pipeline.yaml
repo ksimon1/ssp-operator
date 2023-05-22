@@ -1,0 +1,163 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: windows-customize
+  annotations:
+    description: windows-customize pipeline provides functionality for windows VMs to e.g. install sql server, or install VS Code into windows VM. This pipeline can be reused for customizing Windows 10 and 11.
+spec:
+  params:
+    - name: instanceType
+      type: string
+      description: "Name of VirtualMachineClusterInstancetype object"
+      default: "n1.large"
+    - name: preference
+      type: string
+      description: "Name of VirtualMachineClusterPreference object"
+      default: "windows.11"
+    - name: customizeConfigMapName
+      description: Name of the ConfigMap containing the customization and sysprep configuration files (unattend.xml, etc.). For example windows10-sqlserver or windows11-vs-code. It is possible to provide customize ConfigMaps created by the user too.
+      type: string
+      default: windows-vs-code
+    - name: sourceDiskImageName
+      description: Name of the windows source disk which will be copied and modified with sysprep
+      type: string
+      default: "win11"
+    - name: sourceDiskImageNamespace
+      description: Namespace of the windows source disk which will be copied and modified with sysprep
+      type: string
+      default: "kubevirt-os-images"
+  tasks:
+    - name: create-vm
+      params:
+        - name: runStrategy
+          value: RerunOnFailure
+        - name: "manifest"
+          value: |-          
+            apiVersion: kubevirt.io/v1
+            kind: VirtualMachine
+            metadata:
+              generateName: "windows-customize-automation-"
+            spec:
+              instancetype:
+                kind: VirtualMachineClusterInstancetype
+                name: n1.large
+              preference:
+                kind: VirtualMachineClusterPreference
+                name: windows.11
+              running: true
+              template:
+                spec:
+                  domain:
+                    devices:
+                      disks:
+                        - disk:
+                            bus: virtio
+                          name: rootdisk
+                          bootOrder: 1
+                        - cdrom:
+                            bus: sata
+                          name: sysprep
+                  volumes:
+                  - name: sysprep
+                    sysprep:
+                      configMap: 
+                        name: $(params.autounattendConfigMapName)
+                  - dataVolume:
+                      name:  $(tasks.copy-vm-root-disk.results.name)
+                    name: rootdisk
+    - name: wait-for-vmi-status
+      params:
+        - name: vmiName
+          value: $(tasks.create-vm.results.name)
+        - name: successCondition
+          value: status.phase == Succeeded
+        - name: failureCondition
+          value: status.phase in (Failed, Unknown)
+      runAfter:
+        - create-vm
+      timeout: 2h
+      taskRef:
+        kind: Task
+        name: wait-for-vmi-status
+    - name: create-base-dv
+      params:
+        - name: manifest
+          value: |
+            apiVersion: cdi.kubevirt.io/v1beta1
+            kind: DataVolume
+            metadata:
+              generateName: windows-base-
+              annotations:
+                cdi.kubevirt.io/storage.bind.immediate.requested: \"true\"
+                cdi.kubevirt.io/storage.deleteAfterCompletion: "false"
+            spec:
+              storage:
+                resources:
+                  requests:
+                    storage: 20Gi
+              source:
+                pvc:
+                  name: $(tasks.create-vm.results.name)
+                  namespace: $(tasks.create-vm.results.namespace)
+        - name: waitForSuccess
+          value: "true"
+      runAfter:
+        - wait-for-vmi-status
+      timeout: 1h
+      taskRef:
+        kind: Task
+        name: modify-data-object
+    - name: copy-vm-root-disk
+      taskRef:
+        kind: Task
+        name: modify-data-object
+      params:
+        - name: manifest
+          value: |-
+            apiVersion: cdi.kubevirt.io/v1beta1
+            kind: DataVolume
+            metadata:
+              annotations:
+                cdi.kubevirt.io/storage.bind.immediate.requested: "true"
+              generateName: "windows-customize-rootdisk-"
+            spec:
+              storage:{}
+              source:
+                pvc:
+                  name: $(params.sourceDiskImageName)
+                  namespace: $(params.sourceDiskImageNamespace)
+        - name: waitForSuccess
+          value: 'true'
+
+  finally:
+    - name: cleanup-vm
+      params:
+        - name: vmName
+          value: $(tasks.create-vm.results.name)
+        - name: delete
+          value: "true"
+      timeout: 10m
+      taskRef:
+        kind: Task
+        name: cleanup-vm
+    - name: delete-vm-rootdisk
+      params:
+        - name: deleteObject
+          value: "true"
+        - name: deleteObjectKind
+          value: "PersistentVolumeClaim"
+        - name: deleteObjectName
+          value: "$(tasks.copy-vm-root-disk.results.name)"
+        - name: namespace
+          value: "$(tasks.copy-vm-root-disk.results.namespace)"
+      taskRef:
+        kind: Task
+        name: modify-data-object
+  results:
+    - name: baseDvName
+      description: Name of the created base DataVolume
+      value: $(tasks.create-base-dv.results.name)
+    - name: baseDvNamespace
+      description: Namespace of the created base DataVolume
+      value: $(tasks.create-base-dv.results.namespace)
