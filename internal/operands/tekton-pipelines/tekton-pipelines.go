@@ -114,9 +114,11 @@ func (t *tektonPipelines) Reconcile(request *common.Request) ([]common.Reconcile
 
 func (t *tektonPipelines) Cleanup(request *common.Request) ([]common.CleanupResult, error) {
 	var objects []client.Object
-	for _, p := range t.pipelines {
-		o := p.DeepCopy()
-		objects = append(objects, o)
+	if request.CrdList.CrdExists(tektonCrd) {
+		for _, p := range t.pipelines {
+			o := p.DeepCopy()
+			objects = append(objects, o)
+		}
 	}
 	for _, cm := range t.configMaps {
 		o := cm.DeepCopy()

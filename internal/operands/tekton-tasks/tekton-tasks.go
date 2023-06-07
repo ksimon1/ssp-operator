@@ -177,10 +177,22 @@ func (t *tektonTasks) Reconcile(request *common.Request) ([]common.ReconcileResu
 
 func (t *tektonTasks) Cleanup(request *common.Request) ([]common.CleanupResult, error) {
 	var objects []client.Object
-	for _, t := range t.tasks {
-		o := t.DeepCopy()
-		objects = append(objects, o)
+
+	if request.CrdList.CrdExists(tektonCrd) {
+		clusterTasks, err := listDeprecatedClusterTasks(request)
+		if err != nil {
+			return nil, err
+		}
+		for _, ct := range clusterTasks {
+			o := ct.DeepCopy()
+			objects = append(objects, o)
+		}
+		for _, t := range t.tasks {
+			o := t.DeepCopy()
+			objects = append(objects, o)
+		}
 	}
+
 	for _, rb := range t.roleBindings {
 		o := rb.DeepCopy()
 		objects = append(objects, o)
@@ -199,14 +211,6 @@ func (t *tektonTasks) Cleanup(request *common.Request) ([]common.CleanupResult, 
 		objects = append(objects, o)
 	}
 
-	clusterTasks, err := listDeprecatedClusterTasks(request)
-	if err != nil {
-		return nil, err
-	}
-	for _, ct := range clusterTasks {
-		o := ct.DeepCopy()
-		objects = append(objects, o)
-	}
 	return common.DeleteAll(request, objects...)
 }
 
