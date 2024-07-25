@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":gitSignOff"
+  ],
+  "packageRules": [
+    {
+      "enabled": false,
+      "matchPackagePatterns": [
+        "*"
+      ]
+    }, {
+      "matchPackageNames": ["golang"],
+      "allowedVersions": "<=1.21"
+    }
+  ],
+  "labels": ["release-note-none"],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "osvVulnerabilityAlerts": true,
+  "assigneesFromCodeOwners": true,
+
+  "prConcurrentLimit": 3
+}
