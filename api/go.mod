@@ -3,11 +3,11 @@ module kubevirt.io/ssp-operator/api
 go 1.21
 
 require (
-	github.com/openshift/api v0.0.0-20231130063041-be20875a1373 // release-4.15
-	k8s.io/apimachinery v0.28.4
-	kubevirt.io/containerized-data-importer-api v1.58.0
+	github.com/openshift/api 84047ef4a2ce // release-4.15
+	k8s.io/apimachinery v0.30.3
+	kubevirt.io/containerized-data-importer-api v1.59.0
 	kubevirt.io/controller-lifecycle-operator-sdk/api v0.2.4
-	sigs.k8s.io/controller-runtime v0.16.3
+	sigs.k8s.io/controller-runtime v0.18.4
 )
 
 require (

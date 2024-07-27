@@ -5,38 +5,38 @@ go 1.21
 require (
 	github.com/blang/semver/v4 v4.0.0
 	github.com/fsnotify/fsnotify v1.7.0
-	github.com/go-logr/logr v1.4.1
-	github.com/kubevirt/monitoring/pkg/metrics/parser v0.0.0-20230706095033-373a95665d5a
-	github.com/machadovilaca/operator-observability v0.0.20
-	github.com/onsi/ginkgo/v2 v2.15.0
-	github.com/onsi/gomega v1.32.0
-	github.com/openshift/api v0.0.0-20231130063041-be20875a1373 // release-4.15
+	github.com/go-logr/logr v1.4.2
+	github.com/kubevirt/monitoring/pkg/metrics/parser d28f2aa73295
+	github.com/machadovilaca/operator-observability v0.0.21
+	github.com/onsi/ginkgo/v2 v2.19.1
+	github.com/onsi/gomega v1.34.0
+	github.com/openshift/api 84047ef4a2ce // release-4.15
 	github.com/openshift/custom-resource-status v1.1.2
-	github.com/openshift/library-go v0.0.0-20231129101644-c7f15dcc10f5 // release-4.15
-	github.com/operator-framework/api v0.23.0
-	github.com/operator-framework/operator-lib v0.12.0
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.73.1
-	github.com/prometheus/client_golang v1.19.0
+	github.com/openshift/library-go 8bb8fe6cc56d // release-4.15
+	github.com/operator-framework/api v0.26.0
+	github.com/operator-framework/operator-lib v0.14.0
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.75.2
+	github.com/prometheus/client_golang v1.19.1
 	github.com/prometheus/client_model v0.6.1
-	github.com/prometheus/common v0.52.3
-	github.com/spf13/cobra v1.8.0
+	github.com/prometheus/common v0.55.0
+	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
-	github.com/tektoncd/pipeline v0.58.0
-	gomodules.xyz/jsonpatch/v2 v2.4.0
-	k8s.io/api v0.29.4
-	k8s.io/apiextensions-apiserver v0.29.4
-	k8s.io/apimachinery v0.29.4
-	k8s.io/client-go v0.29.4
-	k8s.io/kube-aggregator v0.29.4
-	k8s.io/utils v0.0.0-20240310230437-4693a0247e57
-	kubevirt.io/api v1.2.0
+	github.com/tektoncd/pipeline v0.62.0
+	gomodules.xyz/jsonpatch/v2/v3 v3.0.1
+	k8s.io/api v0.30.3
+	k8s.io/apiextensions-apiserver v0.30.3
+	k8s.io/apimachinery v0.30.3
+	k8s.io/client-go v0.30.3
+	k8s.io/kube-aggregator v0.30.3
+	k8s.io/utils 18e509b52bc8
+	kubevirt.io/api v1.3.0
 	kubevirt.io/containerized-data-importer-api v1.59.0
 	kubevirt.io/controller-lifecycle-operator-sdk/api v0.2.4
 	kubevirt.io/qe-tools v0.1.8
-	kubevirt.io/ssp-operator/api v0.0.0
-	sigs.k8s.io/controller-runtime v0.17.3
-	sigs.k8s.io/kustomize/api v0.17.1
-	sigs.k8s.io/kustomize/kyaml v0.17.0
+	kubevirt.io/ssp-operator/api v0.20.0
+	sigs.k8s.io/controller-runtime v0.18.4
+	sigs.k8s.io/kustomize/api v0.17.3
+	sigs.k8s.io/kustomize/kyaml v0.17.2
 	sigs.k8s.io/yaml v1.4.0
 )
 

@@ -1,5 +1,5 @@
 # This Dockerfile is used in openshift CI
-FROM quay.io/fedora/fedora:37
+FROM quay.io/fedora/fedora:41
 
 RUN curl -L https://go.dev/dl/go1.21.6.linux-amd64.tar.gz | tar -C /usr/local -xzf -
 ENV PATH=$PATH:/usr/local/go/bin
