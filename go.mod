@@ -7,7 +7,7 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/go-logr/logr v1.4.4
 	github.com/google/cel-go v0.31.0
-	github.com/kubevirt/monitoring/pkg/metrics/parser v0.0.0-20251113100301-4dc32c58c379
+	github.com/kubevirt/monitoring/pkg/metrics/parser v0.0.0-20261125155900-a337d9a88128
 	github.com/onsi/ginkgo/v2 v2.33.0
 	github.com/onsi/gomega v1.43.1
 	github.com/openshift/api v0.0.0-20261027123455-77c45d1bcab3 // release-5.1
